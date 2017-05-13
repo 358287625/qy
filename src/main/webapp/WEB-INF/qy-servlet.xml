@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:websocket="http://www.springframework.org/schema/websocket" 
+	xsi:schemaLocation="  
+        http://www.springframework.org/schema/beans       
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd  
+        http://www.springframework.org/schema/context   
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd  
+        http://www.springframework.org/schema/mvc  
+        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+    	http://www.springframework.org/schema/aop 
+    	http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+    	http://www.springframework.org/schema/jdbc 
+    	http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd
+    	http://www.springframework.org/schema/tx 
+    	http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+    	http://www.springframework.org/schema/websocket 
+    	http://www.springframework.org/schema/websocket/spring-websocket.xsd">
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.qy.*" />
+	<mvc:annotation-driven />
+
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/view/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<!-- 将多个配置文件读取到容器中，交给Spring管理 -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:config.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<!-- 数据源配置，选用淘宝的druid，传说性能一流，待验证 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
+		<property name="url"
+			value="jdbc:mysql://${db_url}/${db_database}?useUnicode=TRUE&amp;characterEncoding=utf8&amp;allowMultiQueries=true" />
+		<property name="username" value="${db_name}" />
+		<property name="password" value="${db_pwd}" />
+		<property name="initialSize" value="10" />
+		<property name="maxActive" value="150" />
+		<property name="maxWait" value="3000" />
+		<property name="removeAbandonedTimeout" value="3600" />
+		<property name="logAbandoned" value="true" />
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation" value="classpath:db_SqlMapper.xml" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+<!-- 	<bean id="websocket" class="com.qy.controller.ChatWebSocketHandler" />
+	
+	<websocket:handlers>
+		<websocket:mapping path="/websocket" handler="websocket" />
+		<websocket:handshake-interceptors>
+			<bean class="com.qy.controller.WebSocketHandshakeInterceptor" />
+		</websocket:handshake-interceptors>
+	</websocket:handlers> -->
+
+</beans>  

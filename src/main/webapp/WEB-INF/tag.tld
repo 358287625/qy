@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib version="2.0" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee web-jsptaglibrary_2_0.xsd">
+	<tlib-version>1.0</tlib-version>
+	<jsp-version>2.0</jsp-version>
+	<short-name>qy</short-name>
+	<uri>/mytaglib</uri>
+	<tag>
+		<name>per</name>
+		<tag-class>com.qy.common.PermissionTag</tag-class>
+		<body-content>JSP</body-content>
+		<attribute>
+			<!-- 标签名 -->
+			<name>hasPers</name>
+			<!-- 是否为可选属性 -->
+			<required>true</required>
+			<!-- 是否接受JSP表达示计算结果 -->
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+
+		<attribute>
+			<name>needPer</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+</taglib>

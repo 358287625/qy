@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<!--errorTracingEnabled:是否启用错误日志，在开发期间建议设为"true" 以方便调试 -->
+	<settings cacheModelsEnabled="true" enhancementEnabled="true"
+		lazyLoadingEnabled="true" errorTracingEnabled="true"
+		useStatementNamespaces="false" />
+
+	 <sqlMap resource="/com/qy/repository/xml/device.xml" />
+	 <sqlMap resource="/com/qy/repository/xml/userinfor.xml" />
+	 <sqlMap resource="/com/qy/repository/xml/doc.xml" />
+	 
+</sqlMapConfig>
