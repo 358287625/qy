@@ -2,5 +2,28 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap>
-	
+
+	<typeAlias alias="userprinter" type="com.qy.beans.UserPrinter" />
+	<typeAlias alias="user" type="com.qy.beans.UserInfor" />
+
+	<insert id="insertUser" parameterClass="user">
+	<![CDATA[
+		INSERT INTO qy_user_tb
+		( uid,lng,lat,code,ctime,province,city,district,ip,ua)
+		VALUES ( #uid#,#lng#,#lat#,#code#,NOW(),#province#,#city#,#district#,#addr#,#ip#,#ua#)
+		]]>
+	</insert>
+
+	<update id="incUserPrintTimes" parameterClass="string">
+		update qy_user_tb
+		set utime=now(), count=count+1 where uid=#uid#
+	</update>
+	<insert id="insertuserprinter" parameterClass="userprinter">
+	<![CDATA[
+		INSERT INTO qy_user_printer_tb
+		( uid,did,ctime,utime,ctime)
+		VALUES ( #uid#,#did#,NOW(),NOW())
+		]]>
+	</insert>
+
 </sqlMap>

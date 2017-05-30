@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>uploadfile</title>
+</head>
+<body>
+	<br />
+	<br />
+	<br />
+	<br />
+	<progress id="progressBar" value="0" max="100"></progress>
+	<span id="percentage"></span>
+	<br />
+	<br />
+	<br />
+	<br />
+	<form id="uploadForm">
+		  <input type="file" id="file" name="myfile" />
+		  <input type="hidden" name="uid" value="12345767890">
+    	  <input type="button" onclick="UpladFile()" value="上传" />
+	</form>
+
+</body>
+<script type="text/javascript">
+	function UpladFile() {
+	//	var fileObj = document.getElementById("file").files[0]; // js 获取文件对象
+		var path = "https://localhost:8088/timerprojects/web/upload"; // 接收上传文件的后台地址 
+		//alert(fileObj);
+		// FormData 对象
+		var form = new FormData(document.getElementById("uploadForm"));
+		// XMLHttpRequest 对象
+		var xhr = new XMLHttpRequest();
+		xhr.open("post", path, true);
+		xhr.onload = function() {
+			 alert("上传完成!");
+		};
+		xhr.upload.addEventListener("progress", progressFunction, false);
+		xhr.send(form);
+	}
+
+	function progressFunction(evt) {
+		var progressBar = document.getElementById("progressBar");
+		var percentageDiv = document.getElementById("percentage");
+		if (evt.lengthComputable) {
+			progressBar.max = evt.total;
+			progressBar.value = evt.loaded;
+			percentageDiv.innerHTML = Math.round(evt.loaded / evt.total * 100)
+					+ "%";
+			if (evt.loaded == evt.total) {
+				alert("上传完成100%");
+			}
+		}
+	}
+</script>
+</html>

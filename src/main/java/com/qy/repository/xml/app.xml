@@ -8,10 +8,8 @@
 	<update id="updateDocPrintTask" parameterClass="doc">
 		update qy_user_doc_tb set utime=now()
 		<isGreaterThan compareValue="0" property="ab" prepend=",">ab=#ab#</isGreaterThan>
-		<isGreaterThan compareValue="0" property="st" prepend=",">st=#st#</isGreaterThan>
-		<isGreaterThan compareValue="0" property="fee" prepend=",">fee=#fee#</isGreaterThan>
-		<isGreaterThan compareValue="0" property="pageFrom" prepend=",">pageFrom=#pageFrom#</isGreaterThan>
-		<isGreaterThan compareValue="0" property="pageTo" prepend=",">pageTo=#pageTo#</isGreaterThan>
+		<isGreaterThan compareValue="0" property="st" prepend=",">st=#st#,</isGreaterThan>
+		<isGreaterThan compareValue="0" property="fee" prepend=",">fee=#fee#,</isGreaterThan>
 		<isNotEmpty prepend="," property="district">
 			district=#district#
 		</isNotEmpty>
@@ -42,17 +40,12 @@
 		<isNotEmpty prepend="," property="pdfpath">
 			pdfpath=#pdfpath#
 		</isNotEmpty>
+		
 		<isNotEmpty prepend="," property="num">
 			num=#num#
 		</isNotEmpty>
 
-		<isNotEmpty prepend="," property="lng">
-			lng=#lng#
-		</isNotEmpty>
-		<isNotEmpty prepend="," property="lat">
-			lat=#lat#
-		</isNotEmpty>
-		where docid=#docid#
+		where did=#did# AND docid=#docid#
 	</update>
 
 	<select id="getPrintTasks" resultClass="doc" parameterClass="doc">
@@ -61,12 +54,6 @@
 	    ]]>
 	</select>
 
-<select id="getPrintTasksByDocId" resultClass="doc" parameterClass="string">
-		  <![CDATA[
-	         SELECT docid,did,pdfpath,num,ab  FROM qy_user_doc_tb WHERE docid=#docid#
-	    ]]>
-	</select>
-	
 <insert id="insertDoc" parameterClass="doc">
 	<![CDATA[
 		INSERT INTO qy_user_doc_tb

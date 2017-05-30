@@ -25,6 +25,7 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.7.0_15"/>
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v7.0"/>
-	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/javax.servlet-api-4.0.0-b05.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/jodconverter-3.0-beta-4.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/pdfbox-2.0.6.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

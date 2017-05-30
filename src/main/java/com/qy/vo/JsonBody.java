@@ -3,13 +3,15 @@ package com.qy.vo;
 
 import java.io.Serializable;
 
+import com.qy.common.Constrant;
+
 public class JsonBody implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 5743483561932951256L;
-	private int code;
-	private String msg;
+	private int code=Constrant.REQUEST_SUCCESS;
+	private String msg="success";
 	private Object obj;
 
 	public int getCode() {
