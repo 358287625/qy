@@ -104,3 +104,5 @@ ALTER TABLE qy_user_doc_tb MODIFY COLUMN ua VARCHAR(128) DEFAULT "" COMMENT '用
 
 ALTER TABLE qy_printer_tb DROP COLUMN tag;
 ALTER TABLE qy_app_tb DROP COLUMN tag;
+
+ALTER TABLE qy_user_doc_tb ADD COLUMN `aid` varchar(64) DEFAULT""  COMMENT 'pc安装的app 的id';
