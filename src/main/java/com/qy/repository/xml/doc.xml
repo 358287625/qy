@@ -70,8 +70,8 @@
 <insert id="insertDoc" parameterClass="doc">
 	<![CDATA[
 		INSERT INTO qy_user_doc_tb
-		( docid,uid,did,srcpath,ctime,ua)
-		VALUES ( #docid#,#uid#,#did#,#srcpath#,NOW(),#ua#)
+		( docid,uid,did,srcpath,ctime,ua,num)
+		VALUES ( #docid#,#uid#,#did#,#srcpath#,NOW(),#ua#,#num#)
 		]]>
 	</insert>
 </sqlMap>

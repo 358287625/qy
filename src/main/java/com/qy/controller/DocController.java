@@ -1,6 +1,8 @@
 package com.qy.controller;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,9 +13,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.qy.beans.Doc;
@@ -41,14 +45,22 @@ public class DocController extends BaseController {
 	@ResponseBody
 	public JsonBody upload(
 			@RequestParam(value = "myfile", required = true) MultipartFile file,
-			final HttpServletRequest request, final String uid, final String aid) {
-		final String ua = getParams(request, Constrant.UA);
+			final HttpServletRequest request, final String uid, final String pid) {
+		final String ua = getHeaderVal(request, Constrant.UA);
+		log.info("ua="+ua);
 		JsonBody jsonBody = new JsonBody();
+		if (StringUtils.isEmpty(uid) || StringUtils.isEmpty(pid)
+				|| pid.length() > 32) {
+			jsonBody.setMsg("request parameter error");
+			jsonBody.setCode(Constrant.REQUEST_FAIL);
+			return jsonBody;
+		}
 		// uid 防止多人上传同一个名称的文档
-		// aid 打印机编号
+		// pid 打印机编号
 		String path = request.getSession().getServletContext()
-				.getRealPath("upload");
-		final String absolutePath = path + file.getOriginalFilename();
+				.getRealPath("upload");// file_store_path
+		final String absolutePath = path + File.separator+file.getOriginalFilename();
+		log.info(absolutePath);
 		final String printDocUuid = UUID.randomUUID().toString()
 				.replace("-", "");
 		File targetFile = new File(absolutePath);
@@ -64,12 +76,13 @@ public class DocController extends BaseController {
 				public void run() {
 					// 打印文档路径，打印用户uid，那台打印机aid 打印的文档文档入库
 					Doc doc = new Doc();
-					doc.setAid(aid);
+					doc.setDid(pid);
 					doc.setUid(uid);
 					doc.setSrcpath(absolutePath);
 					doc.setDocid(printDocUuid);
 					doc.setUa(ua);
 					doc.setIp(Tools.getRequestIp(request));
+					doc.setNum(1);// 默认打印一张
 					// 经度纬度解析后面再解析
 					docService.add(doc);
 				}
@@ -77,8 +90,25 @@ public class DocController extends BaseController {
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
-		jsonBody.setObj(printDocUuid);
+		Map map = new HashMap<String, String>();
+		map.put("tid", printDocUuid);
+		jsonBody.setObj(map);
 		return jsonBody; // 后天提交打印的配置，需要携带改参数
+	}
+
+	@ExceptionHandler(Exception.class)
+	@ResponseBody
+	public JsonBody handleException(Exception ex, HttpServletRequest request) {
+		Map<Object, Object> model = new HashMap<Object, Object>();
+		JsonBody jsonBody = new JsonBody();
+		if (ex instanceof MaxUploadSizeExceededException) {
+			jsonBody.setCode(Constrant.REQUEST_FAIL);
+			jsonBody.setMsg("file upload exceeded limit max size");
+		} else {
+			jsonBody.setCode(Constrant.REQUEST_FAIL);
+			jsonBody.setMsg("operate failed");
+		}
+		return jsonBody;
 	}
 
 	/**
@@ -115,6 +145,7 @@ public class DocController extends BaseController {
 				: 0);
 		doc.setDocid(taskId);
 		docService.edit(doc);
+
 		return jsonBody;
 	}
 

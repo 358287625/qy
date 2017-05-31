@@ -43,3 +43,23 @@
 	  返回示例：	{"code":1,"msg":"success","obj":[{"num":"0","pdf":"","pid":"2f64b33_1","ab":"0","tid":"1111111111111"}]}
 				返回状态为0和状态为1的，属于该打印机的所有任务（'文档状态：0已上传，1已通知下载，2下载中，3已打印cg，4打印失败，失败时error有错误原因',）
 				obj 可能是一数组，存在多个。其中num 打印份数，pdf打印文件路径,pid打印机编号,ab：0当面打印，1双面打印,tid任务编号
+				
+9：文档上传接口
+	  请求协议：http://localhost:8080/qy/doc/upload.do?uid=111&pid=2f64b33_1
+	            uid 防止多人上传同一个名称的文档,前期没有接用户，可以时间戳替代，不能写死
+				pid 打印机id。
+				上传文档大小限制10M
+	  返回示例：成功{"code":1,"msg":"success","obj":{"tid":"a0f15318c3bc4d1a846ac0db42f64b33"}}	
+	            失败 {"code":0,"msg":"file upload exceeded limit max size","obj":null}
+	  特别说明：form的enctype=”multipart/form-data” 参考  http://localhost:8080/qy/upload.html示例
+	  
+9：文档打印设置选项
+     请求协议：http://localhost:8080/qy/doc/set.do?tid=1111111111111&f=1&t=3&num=2&ab=1
+	            tid 文档上传成功后返回的taskid
+				f 从第几页开始打印，1开始计数
+				t 打印到第几页结束
+				num 打印份数
+				ab：0当面打印，1双面打印
+				
+	  返回示例：	{"code":1,"msg":"success","obj":null}	
+			

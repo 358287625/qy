@@ -1,10 +1,7 @@
 package com.qy.common;
 
 import java.io.BufferedReader;
-import java.io.FileOutputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -15,13 +12,13 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-//import net.sf.json.JSONObject;
-import net.sf.json.JSONObject;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 public class Tools {
 	private static Logger log = LoggerFactory.getLogger(Tools.class);
@@ -36,9 +33,8 @@ public class Tools {
 	public static final NumberFormat CURRENCY_FORMAT = NumberFormat
 			.getCurrencyInstance(Locale.CHINA);
 
-	public static JSONObject formatStr2JSON(String str) {
-
-		return JSONObject.fromObject(str);
+	public static JSONObject formatStr2JSON(String infor) {
+		return JSONObject.parseObject(infor);
 	}
 
 	public static void writeCookie(HttpServletResponse response, String key,
@@ -110,11 +106,10 @@ public class Tools {
 		if (StringUtils.isEmpty(res))
 			return null;
 		String[] infor = new String[7];// 省、市、区、详细地址、经度、纬度、地区编号
-		JSONObject jsonObject = JSONObject.fromObject(res);
+		JSONObject jsonObject = JSONObject.parseObject(res);
 		String ret = (String) jsonObject.get("ret");
 		if ("ok".equals(ret)) {
-			net.sf.json.JSONArray data = (net.sf.json.JSONArray) jsonObject
-					.get("data");
+			JSONArray data =  jsonObject.getJSONArray("data");
 			String city = (String) data.get(2);
 			String lat = (String) data.get(5);
 			String lng = (String) data.get(6);
@@ -150,8 +145,8 @@ public class Tools {
 				Constrant.GAO_DE_WEB_KEY, lng + "," + lat);
 
 		String infor = HttpUtils.getInstance().callHtmlRequestGet(url);
-		JSONObject jsonObject = JSONObject.fromObject(infor);
-		int res = Integer.valueOf((String) jsonObject.get("status"));
+		JSONObject jsonObject = JSONObject.parseObject(infor);
+		int res =jsonObject.getInteger("status");
 		if (Constrant.NUMBER_INT_ONE != res)
 			return retinfor;
 		Object infocode = jsonObject.get("infocode");

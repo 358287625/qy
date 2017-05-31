@@ -24,4 +24,8 @@ public class BaseController {
 		Object obj = req.getParameter(paramName);
 		return obj == null ? "" : (String) obj;
 	}
+	public String getHeaderVal(HttpServletRequest req, String paramName) {
+		Object obj = req.getHeader(paramName);
+		return obj == null ? "" : (String) obj;
+	}
 }

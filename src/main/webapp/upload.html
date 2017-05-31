@@ -18,6 +18,7 @@
 	<form id="uploadForm">
 		  <input type="file" id="file" name="myfile" />
 		  <input type="hidden" name="uid" value="12345767890">
+		   <input type="hidden" name="pid" value="2f64b33_1">
     	  <input type="button" onclick="UpladFile()" value="上传" />
 	</form>
 
@@ -25,7 +26,7 @@
 <script type="text/javascript">
 	function UpladFile() {
 	//	var fileObj = document.getElementById("file").files[0]; // js 获取文件对象
-		var path = "https://localhost:8088/timerprojects/web/upload"; // 接收上传文件的后台地址 
+		var path = "http://localhost:8080/qy/doc/upload.do"; // 接收上传文件的后台地址 
 		//alert(fileObj);
 		// FormData 对象
 		var form = new FormData(document.getElementById("uploadForm"));
