@@ -1,0 +1,45 @@
+1：pc端安装app上报，后台自动为该app分配一个appid并返回，
+	请求协议：http://localhost:8080/qy/dev/pro.do?c=init&mac=1&os=2&ver=3
+	          c（cmd简写），该协议固定为init，mac：pc端 mac地址，os：操作系统 ；ver：操作系统版本
+	返回示例：{"code":1,"msg":"success","obj":{"aid":"a0f15318c3bc4d1a846ac0db42f64b33"}}
+	          code 为1代表成功，为0代表失败。aid为appid。
+			  需要特别说明的是，系统利用mac、os、ver 做唯一判断，如果系统里面已经存在一致的记录，将直接返回，不在新增，所以请确保mac、os、ver三者组合值唯一
+	
+2：pc端app发现可用打印机上报
+   请求协议：http://localhost:8080/qy/dev/pro.do?c=rpt&pid=2f64b33_1&aid=a0f15318c3bc4d1a846ac0db42f64b33
+			c（cmd简写），该协议固定为rpt，aid:安装在pc 上的appid，pid：app 发现可用打印时，根据自己需要生成的id，长度不能超过32位
+	返回示例：	{"code":1,"msg":"success","obj":null}
+
+3：获取当前打印机关联的app在线状态
+   请求协议：http://localhost:8080/qy/dev/pro.do?c=dst&pid=2f64b33_1
+			c（cmd简写），该协议固定为dst，pid：app 发现可用打印时，根据自己需要生成的id，长度不能超过32位
+	返回示例：{"code":1,"msg":"success","obj":{"appSta":"0","pid":"2f64b33_1"}}，appSta相关联app在线状态，在线：0，离线：1
+   
+   
+4：获取用户使用过的打印机。（第一期不需要，暂时不提供）   
+
+
+5：扫描打印设备上的二维码，
+	请求协议：http://localhost:8080/qy/dev/pro.do?c=scan&pid=2f64b33_1
+	c（cmd简写），该协议固定为scan，pid：app 发现可用打印时，根据自己需要生成的id，长度不能超过32位
+	返回示例：{"code":1,"msg":"success","obj":{"appSta":"0","pid":"2f64b33_1"}}，appSta相关联app在线状态，在线：0，此时允许打印，离线：1，测试应该告诉用户不能打印
+	
+6：打印任务状态上报
+	请求协议：http://localhost:8080/qy/dev/pro.do?c=sta&pid=2f64b33_1&tid=1111111111111&st=4&tip=XXX
+			c（cmd简写），该协议固定为sta，pid：app 发现可用打印时，根据自己需要生成的id，长度不能超过32位
+	        tid:每个打印任务有个taskid，消息推送或者poll获取的
+			st：上报状态编号。文档状态：0已上传，1已通知下载，2下载中，3已打印cg，4打印失败，失败时error有错误原因'
+	返回示例：{"code":1,"msg":"success","obj":null}
+	
+	
+7：pc端 app 上报在线状态
+	  请求协议：http://localhost:8080/qy/dev/pro.do?c=ras&aid=a0f15318c3bc4d1a846ac0db42f64b33
+			c（cmd简写），该协议固定为ras，aid:安装在pc 上的appid，
+	  返回示例：	{"code":1,"msg":"success","obj":null}
+
+8：pc 安装的app轮询打印任务
+	  请求协议：http://localhost:8080/qy/dev/pro.do?c=get&pid=2f64b33_1
+			c（cmd简写），该协议固定为get，aid:安装在pc 上的appid，pid为打印id。
+	  返回示例：	{"code":1,"msg":"success","obj":[{"num":"0","pdf":"","pid":"2f64b33_1","ab":"0","tid":"1111111111111"}]}
+				返回状态为0和状态为1的，属于该打印机的所有任务（'文档状态：0已上传，1已通知下载，2下载中，3已打印cg，4打印失败，失败时error有错误原因',）
+				obj 可能是一数组，存在多个。其中num 打印份数，pdf打印文件路径,pid打印机编号,ab：0当面打印，1双面打印,tid任务编号
