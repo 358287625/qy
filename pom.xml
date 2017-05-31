@@ -22,6 +22,13 @@
 			<artifactId>spring-websocket</artifactId>
 			<version>${springVersion}</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-messaging</artifactId>
@@ -145,12 +152,6 @@
 			<version>3.5</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.5</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 			<version>4.3.4</version>
@@ -159,6 +160,12 @@
 			<groupId>com.sun.jna</groupId>
 			<artifactId>jna</artifactId>
 			<version>3.0.9</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.ant/ant -->
+		<dependency>
+			<groupId>org.apache.ant</groupId>
+			<artifactId>ant</artifactId>
+			<version>1.10.1</version>
 		</dependency>
 
 		<dependency>
@@ -240,4 +247,13 @@
 	<build>
 		<finalName>qy</finalName>
 	</build>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>2.5</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 </project>
