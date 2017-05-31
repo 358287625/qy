@@ -48,12 +48,6 @@
 		where did=#did# AND docid=#docid#
 	</update>
 
-	<select id="getPrintTasks" resultClass="doc" parameterClass="doc">
-		  <![CDATA[
-	         SELECT docid,did,pdfpath,num,ab  FROM qy_user_doc_tb WHERE did=#did# AND docid=#docid# AND st=0
-	    ]]>
-	</select>
-
 <insert id="insertDoc" parameterClass="doc">
 	<![CDATA[
 		INSERT INTO qy_user_doc_tb

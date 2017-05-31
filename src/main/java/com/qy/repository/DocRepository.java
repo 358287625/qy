@@ -56,9 +56,9 @@ public class DocRepository/* extends BaseRepository*/{
 		}
 		return doc==null?null:(Doc)doc;
 	}
-	public List list(BaseData baseData)  {
+	public List list(String pid)  {
 		try {
-			return sqlMapClient.queryForList("getPrintTasks", (Doc)baseData);
+			return sqlMapClient.queryForList("getPrintTasks", pid);
 		} catch (SQLException e) {
 			log.error(e.getMessage(), e);
 		}

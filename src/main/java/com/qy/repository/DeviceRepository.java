@@ -59,6 +59,7 @@ public class DeviceRepository /*extends BaseRepository */{
 		return list;
 	}
 	
+	
 	public List listByUid(String uid) {
 		List<Device> list=null;
 		try {
@@ -78,14 +79,12 @@ public class DeviceRepository /*extends BaseRepository */{
 		return list;
 	}
 	
-	public List installApp(App app){
-		List<Device> list=null;
+	public void insertApp(App app){
 		try {
-			list = sqlMapClient.queryForList("installApp", app);
+			sqlMapClient.insert("installApp", app);
 		} catch (SQLException e) {
 			log.error(e.getMessage(), e);
 		}
-		return list;
 	}
 	/**
 	 * 更新设备状态

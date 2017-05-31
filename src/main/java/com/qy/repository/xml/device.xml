@@ -15,7 +15,7 @@
 
 	<select id="listDevice" resultClass="device" parameterClass="string">
 		  <![CDATA[
-	         SELECT  did,aid,pid,tag,A.appSta  FROM qy_printer_tb WHERE pid=#pid#
+	         SELECT  did,aid,pid,tag,appSta  FROM qy_printer_tb WHERE pid=#pid#
 	    ]]>
 	</select>
 
@@ -37,10 +37,10 @@
 	</update>
 	
 	<select id="listApps" resultClass="app"
-		parameterClass="string">
+		parameterClass="app">
 		  <![CDATA[
 	         SELECT aid,mac,lng,lat,st,code,province,city,district,addr,ip,ver,os,tag  FROM 
-  				qy_app_tb A INNER JOIN qy_user_printer_tb B  ON(A.did=B.did) WHERE B.uid=#uid# WHERE 1=1
+  				qy_app_tb A  WHERE 1=1
 			]]>
 			<dynamic>
 			<isNotEmpty prepend="AND" property="mac">

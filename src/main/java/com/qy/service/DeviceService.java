@@ -1,7 +1,10 @@
 package com.qy.service;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -26,23 +29,23 @@ public class DeviceService extends BaseService{
 	@Autowired
 	private DocRepository docRepository;
 	public void updateTask(Doc doc){
-		final String aid=doc.getAid();
-		Tools.cachedThreadPool.execute(new Runnable() {
-			public void run() {
-				deviceRepository.updateAppAndPrintStatus(aid, Constrant.DEVICE_ON_LINE);
-			}
-		});
 		docRepository.edit(doc);
 	}
-	public List getTasks(Doc doc){
-		final String aid=doc.getAid();
-		Tools.cachedThreadPool.execute(new Runnable() {
-			public void run() {
-				deviceRepository.updateAppAndPrintStatus(aid, Constrant.DEVICE_ON_LINE);
-			}
-		});
-		return docRepository.list(doc);
+	public List getTasks(String pid){
+		List<Doc> list= docRepository.list(pid);
+		List<Map<String,String>> maps = new ArrayList<>();
+		for(Doc doc : list){
+			Map<String,String> map = new HashMap<String, String>();
+			map.put("tid",doc.getDocid() );
+			map.put("pid",doc.getDid() );
+			map.put("pdf", doc.getPdfpath());
+			map.put("num", ""+doc.getNum());
+			map.put("ab", ""+doc.getAb());
+			maps.add(map);
+		}
+		return maps;
 	}
+	
 	public void reportAppStatus(final String aid){
 		Tools.cachedThreadPool.execute(new Runnable() {
 			public void run() {
@@ -58,33 +61,34 @@ public class DeviceService extends BaseService{
 		//检查app是否已经安装
 		List list= deviceRepository.listApps(app);
 		if(list !=null && list.size()>0){//有重复
-			return;
+			app.setAid(((App) list.get(0)).getAid());
+			return ;
 		}
 		final String aid = UUID.randomUUID().toString().replace("-", "");
 		String tag = Constrant.TAG_PREFFIX+(app.getMac()+app.getOs()+app.getVer()).hashCode();
 		app.setTag(tag);
 		app.setAid(aid);
 		//保存主题信息，返回aid
-		deviceRepository.installApp(app);
+		deviceRepository.insertApp(app);
 		//异步保存位置信息
 		final String ip = app.getIp();
-		Tools.cachedThreadPool.execute(new Runnable() {
-			public void run() {
-				//省、市、区、详细地址、经度、纬度、地区编号
-				String[] locations =Tools.getLocationByIPIP(ip);
-				App app = new App();
-				app.setIp(ip);
-				app.setAid(aid);
-				app.setAddr(locations[3]);
-				app.setCity(locations[1]);
-				app.setCode(locations[6]);
-				app.setDistrict(locations[2]);
-				app.setLat(locations[5]);
-				app.setLng(locations[4]);
-				app.setProvince(locations[0]);	
-				deviceRepository.edit(app);
-			}
-		});
+//		Tools.cachedThreadPool.execute(new Runnable() {
+//			public void run() {
+//				//省、市、区、详细地址、经度、纬度、地区编号
+//				String[] locations =Tools.getLocationByIPIP(ip);
+//				App app = new App();
+//				app.setIp(ip);
+//				app.setAid(aid);
+//				app.setAddr(locations[3]);
+//				app.setCity(locations[1]);
+//				app.setCode(locations[6]);
+//				app.setDistrict(locations[2]);
+//				app.setLat(locations[5]);
+//				app.setLng(locations[4]);
+//				app.setProvince(locations[0]);	
+//				deviceRepository.edit(app);
+//			}
+//		});
 		
 	}
 	public Object add(BaseData baseData) {
@@ -96,8 +100,6 @@ public class DeviceService extends BaseService{
 		final String did = UUID.randomUUID().toString().replace("-", "");
 		device.setDid(did);
 	
-		/*String tag = Constrant.TAG_PREFFIX+(device.getMac()+device.getOs()+device.getVer()).hashCode();
-		device.setTag(tag);*/
 		deviceRepository.add(device);
 		final String aid=device.getAid();
 		Tools.cachedThreadPool.execute(new Runnable() {
@@ -116,12 +118,12 @@ public class DeviceService extends BaseService{
 	}
 
 	
-	public List<BaseData> listByPid(final String pid,final String aid) {
-		Tools.cachedThreadPool.execute(new Runnable() {
+	public List<BaseData> listByPid(final String pid) {
+		/*Tools.cachedThreadPool.execute(new Runnable() {
 			public void run() {
 				deviceRepository.updateAppAndPrintStatus(aid, Constrant.DEVICE_ON_LINE);
 			}
-		});
+		});*/
 		return deviceRepository.listByPid(pid);
 	}
 	/**

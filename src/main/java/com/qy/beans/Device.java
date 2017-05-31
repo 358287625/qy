@@ -18,7 +18,7 @@ public class Device extends BaseData {
 	private String pid;//打印机id
 	private String tag;//长连接推送
 	private String aid;//app,
-	private String appSta;//app在线状态'在线状态，0在线，1表示离线',,
+	private String appSta;//app在线状态'在线状态，0在线，1表示离线',,appSta
 	public String getDid() {
 		return did;
 	}

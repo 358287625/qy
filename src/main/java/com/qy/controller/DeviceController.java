@@ -1,6 +1,8 @@
 package com.qy.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,22 +44,24 @@ public class DeviceController extends BaseController {
 		//打印任务状态上报
 		if(Constrant.REPORT_TASK_STATUS.equals(cmd)){
 			String taskId =getParams(req, "tid");
-			String did =getParams(req, "did");
+			String pid =getParams(req, "pid");
 			String status =getParams(req, "st");
-			String aid = getParams(req, "aid");//设置在线状态
+			String errorinfor =getParams(req, "tip");
 			
-			if(StringUtils.isEmpty(aid) ||StringUtils.isEmpty(taskId) 
-			   || StringUtils.isEmpty(did) || StringUtils.isEmpty(status)){
+			if(StringUtils.isEmpty(taskId) 
+			   || StringUtils.isEmpty(pid) || StringUtils.isEmpty(status) || pid.length()>32){
 				jsonBody.setCode(Constrant.REQUEST_FAIL);
 				jsonBody.setMsg("params error");
 				return jsonBody;
 			}
 			
 			Doc doc = new Doc();
-			doc.setDid(did);
+			doc.setDid(pid);
 			doc.setSt(Integer.valueOf(status));
 			doc.setDocid(taskId);
-			doc.setAid(aid);
+			if("4".equals(status)){
+				doc.setError(errorinfor);
+			}
 			
 			deviceService.updateTask(doc);
 			return jsonBody;
@@ -65,21 +69,22 @@ public class DeviceController extends BaseController {
 		//扫描打印机二位码
 		if(Constrant.QRCODE_SCAN.equals(cmd)){
 			String pid =getParams(req, "pid");//打印path上面的编码
-			String uid = getParams(req, "uid");//用户id，第一期先不管
-			
-			if(StringUtils.isEmpty(pid)){
+			if(StringUtils.isEmpty(pid) || pid.length()>32){
 				jsonBody.setCode(Constrant.REQUEST_FAIL);
 				jsonBody.setMsg("params error");
 				return jsonBody;
 			}
-			List list =deviceService.listByPid(pid, "");
+			List list =deviceService.listByPid(pid);
 			if(list == null || list.size()<=0){
 				jsonBody.setCode(Constrant.REQUEST_FAIL);
 				jsonBody.setMsg("printer not exist");
 				return jsonBody;	
 			}
 			
-			jsonBody.setObj(list);
+			Map map = new HashMap<String,String>();
+			map.put("pid", pid);
+			map.put("appSta",((Device)list.get(0)).getAppSta() );
+			jsonBody.setObj(map);
 			return jsonBody;
 		}
 		//上报app的在线状态
@@ -97,21 +102,15 @@ public class DeviceController extends BaseController {
 		
 		//获取打印任务
 		if(Constrant.GET_TASK.equals(cmd)){
-			String taskId =getParams(req, "tid");
-			String did =getParams(req, "did");
-			String aid = getParams(req, "aid");//设置在线状态
+			String pid =getParams(req, "pid");
 			
-			if(StringUtils.isEmpty(aid) ||StringUtils.isEmpty(taskId) || StringUtils.isEmpty(did)){
+			if(StringUtils.isEmpty(pid) || pid.length()>32){
 				jsonBody.setCode(Constrant.REQUEST_FAIL);
 				jsonBody.setMsg("params error");
 				return jsonBody;
 			}
 			
-			Doc doc = new Doc();
-			doc.setDid(did);
-			doc.setDocid(taskId);
-			doc.setAid(aid);
-			List list =deviceService.getTasks(doc);
+			List list =deviceService.getTasks(pid);
 			jsonBody.setObj(list);
 			return jsonBody;
 		}
@@ -134,15 +133,16 @@ public class DeviceController extends BaseController {
 			app.setOs(os);
 			app.setIp(ip);
 			deviceService.installApp(app);
-			jsonBody.setObj(app);
+			Map map = new HashMap<String, String>(1);
+			map.put("aid", app.getAid());//返回appid
+			jsonBody.setObj(map);
 			return jsonBody;
 		}
 		//app发现打印机上报
 		if(Constrant.REPORT_DEVICE.equals(cmd)){
 			String pid =getParams(req, "pid");//打印机id
-			String aid =getParams(req, "aid");//打印机aid
-			String tag =getParams(req, "tag");//打印机tag
-			if(StringUtils.isEmpty(aid) ||StringUtils.isEmpty(tag) || StringUtils.isEmpty(pid)){
+			String aid =getParams(req, "aid");//pc aid
+			if(StringUtils.isEmpty(aid) || StringUtils.isEmpty(pid)|| pid.length()>32){
 				jsonBody.setCode(Constrant.REQUEST_FAIL);
 				jsonBody.setMsg("params error");
 				return jsonBody;
@@ -150,10 +150,8 @@ public class DeviceController extends BaseController {
 			
 			Device device = new Device();
 			device.setPid(pid);
-			device.setTag(tag);
 			device.setAid(aid);
-			Object data = deviceService.add(device);
-			jsonBody.setObj(data);
+			deviceService.add(device);
 			return jsonBody;
 		}
 		//获取用户关联的设备
@@ -173,17 +171,19 @@ public class DeviceController extends BaseController {
 		//获取单台打印机的状态
 		if(Constrant.GET_DEVICE_STATUS.equals(cmd)){ 
 			String pid = getParams(req, "pid");
-			String aid = getParams(req, "aid");//设置在线状态
 			
-			if(StringUtils.isEmpty(aid) || StringUtils.isEmpty(pid)){
+			if( StringUtils.isEmpty(pid) || pid.length()>32){
 				jsonBody.setCode(Constrant.REQUEST_FAIL);
 				jsonBody.setMsg("params error");
 				return jsonBody;
 			}
-			List list = deviceService.listByPid(pid,aid);
+			List list = deviceService.listByPid(pid);
 			if(list!=null && list.size()>0)
 			{
-				jsonBody.setObj(list.get(0));
+				Map map = new HashMap<String,String>();
+				map.put("pid", pid);
+				map.put("appSta",((Device)list.get(0)).getAppSta() );
+				jsonBody.setObj(map);
 				return jsonBody;
 			}
 			jsonBody.setCode(Constrant.REQUEST_FAIL);
