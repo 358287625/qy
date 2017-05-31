@@ -65,8 +65,6 @@ public class DeviceService extends BaseService{
 			return ;
 		}
 		final String aid = UUID.randomUUID().toString().replace("-", "");
-		String tag = Constrant.TAG_PREFFIX+(app.getMac()+app.getOs()+app.getVer()).hashCode();
-		app.setTag(tag);
 		app.setAid(aid);
 		//保存主题信息，返回aid
 		deviceRepository.insertApp(app);

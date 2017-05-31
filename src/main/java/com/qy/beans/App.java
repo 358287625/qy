@@ -11,7 +11,6 @@ public class App extends BaseData {
 	private String mac;// '设备mac地址',
 	private String ver;// 打印设备pc版本
 	private String os;// 打印设备pc操作系统
-	private String tag;//长连接推送
 	private String lng;// '设备经度',
 	private String lat;// '设备纬度',
 	private String type;// '设备打印机类型',
@@ -151,14 +150,6 @@ public class App extends BaseData {
 
 	public void setUtime(Date utime) {
 		this.utime = utime;
-	}
-
-	public String getTag() {
-		return tag;
-	}
-
-	public void setTag(String tag) {
-		this.tag = tag;
 	}
 
 }

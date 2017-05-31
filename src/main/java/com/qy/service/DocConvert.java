@@ -24,33 +24,14 @@ import com.qy.common.Tools;
  */
 public class DocConvert {
 	private static Logger log = LoggerFactory.getLogger(DocConvert.class);
-	private static String OFFICE_HOME = "";
 	private static OfficeManager officeManager;
-	private static int port[] = { 8100 };
 	private static DocConvert instance = new DocConvert();
 	private static String CONVERT_DOC_TO_PDF_SHELL=Class.class.getClass().getResource("/").getPath()+"/convert.sh"; 
 	public static DocConvert getInstance() {
 		return instance;
 	}
 
-	private DocConvert() {
-		if (officeManager != null) {
-			return;
-		}
-		DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
-		try {
-			System.out.println("准备启动服务....");
-			configuration.setOfficeHome(OFFICE_HOME);// 设置OpenOffice.org安装目录
-			configuration.setPortNumbers(port); // 设置转换端口，默认为8100
-			configuration.setTaskExecutionTimeout(1000 * 60 * 5L);// 设置任务执行超时为5分钟
-			configuration.setTaskQueueTimeout(1000 * 60 * 60 * 24L);// 设置任务队列超时为24小时
-			officeManager = configuration.buildOfficeManager();
-			officeManager.start(); // 启动服务
-			System.out.println("office转换服务启动成功!");
-		} catch (Exception ce) {
-			System.out.println("office转换服务启动失败!详细信息:" + ce);
-		}
-	}
+	private DocConvert() {}
 
 	/**
 	 * http://blog.csdn.net/dongdong_919/article/details/44959237

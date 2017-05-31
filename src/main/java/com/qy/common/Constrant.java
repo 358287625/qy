@@ -13,7 +13,6 @@ public class Constrant {
 	public static int REQUEST_FAIL=0;
 	public static String PDF_SUB_PATH ="/sub/";
 	public static String PDF_PATH ="/pdf/";
-	public static String TAG_PREFFIX="qypc_";//
 	public static String REPORT_DEVICE="rpt";//设备上报
 	public static String REPORT_APP_STATUS="ras";//上报app的状态
 	public static String QRCODE_SCAN="scan";//扫描打印机二位嘛

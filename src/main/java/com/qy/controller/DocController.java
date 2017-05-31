@@ -165,7 +165,6 @@ public class DocController extends BaseController {
 		String taskId = req.getParameter("tid");// 文档转换的任务id
 		String fromPage = req.getParameter("f");// 客户传值从1开始，如果fromPage、toPage为零或者为空，表示全部打印
 		String toPage = req.getParameter("t");
-		// String tag = req.getParameter("tag");//那个pc端接受打印任务
 		String did = req.getParameter("did");// 那台打印机
 		String ab = req.getParameter("ab");// 双面打印
 		System.out.println("exchange_task - " + taskId + " - " + fromPage

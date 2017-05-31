@@ -7,7 +7,7 @@
 	<select id="listDeviceByUid" resultClass="device"
 		parameterClass="string">
 		  <![CDATA[
-	         SELECT A.did,A.aid,A.pid,A.tag,A.appSta  FROM 
+	         SELECT A.did,A.aid,A.pid,A.appSta  FROM 
   				qy_printer_tb A INNER JOIN qy_user_printer_tb B  ON(A.did=B.did) WHERE B.uid=#uid#
 			]]>
 
@@ -15,15 +15,15 @@
 
 	<select id="listDevice" resultClass="device" parameterClass="string">
 		  <![CDATA[
-	         SELECT  did,aid,pid,tag,appSta  FROM qy_printer_tb WHERE pid=#pid#
+	         SELECT  did,aid,pid,appSta  FROM qy_printer_tb WHERE pid=#pid#
 	    ]]>
 	</select>
 
 	<insert id="insertDevice" parameterClass="device">
 	<![CDATA[
 		INSERT INTO qy_printer_tb
-		( did,aid,pid,tag ,ctime)
-		VALUES (#did#,#aid#,#pid#,#tag# ,now())
+		( did,aid,pid ,ctime)
+		VALUES (#did#,#aid#,#pid# ,now())
 		]]>
 	</insert>
 	
@@ -39,7 +39,7 @@
 	<select id="listApps" resultClass="app"
 		parameterClass="app">
 		  <![CDATA[
-	         SELECT aid,mac,lng,lat,st,code,province,city,district,addr,ip,ver,os,tag  FROM 
+	         SELECT aid,mac,lng,lat,st,code,province,city,district,addr,ip,ver,os  FROM 
   				qy_app_tb A  WHERE 1=1
 			]]>
 			<dynamic>
@@ -59,8 +59,8 @@
 	<insert id="installApp" parameterClass="app">
 	<![CDATA[
 		INSERT INTO qy_app_tb
-		( aid,mac,lng,lat ,code,province,city,district,addr,ip,ver,os,tag,ctime)
-		VALUES (#aid#,#mac#,#lng#,#lat#,#code#,#province#,#city#,#district#,#addr#,#ip#,#ver#,#os#,#tag#,now())
+		( aid,mac,lng,lat ,code,province,city,district,addr,ip,ver,os,ctime)
+		VALUES (#aid#,#mac#,#lng#,#lat#,#code#,#province#,#city#,#district#,#addr#,#ip#,#ver#,#os#,now())
 		]]>
 	</insert>
 	

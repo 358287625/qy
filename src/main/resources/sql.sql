@@ -101,3 +101,6 @@ ALTER TABLE qy_user_doc_tb ADD COLUMN lng VARCHAR(16) DEFAULT '' COMMENT'上传�
 ALTER TABLE qy_user_doc_tb ADD COLUMN lat VARCHAR(16) DEFAULT '' COMMENT'上传文档ip的纬度'; 
 ALTER TABLE qy_user_doc_tb DROP COLUMN imgpath;
 ALTER TABLE qy_user_doc_tb MODIFY COLUMN ua VARCHAR(128) DEFAULT "" COMMENT '用户打印时浏览器ua';
+
+ALTER TABLE qy_printer_tb DROP COLUMN tag;
+ALTER TABLE qy_app_tb DROP COLUMN tag;
