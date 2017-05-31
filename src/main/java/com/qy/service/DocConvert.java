@@ -120,15 +120,6 @@ public class DocConvert {
 
 	}
 
-	public static void stopService() {// web应用停止时调用
-		System.out.println("关闭office转换服务....");
-		if (officeManager != null) {
-			officeManager.stop();
-			officeManager = null;
-		}
-		System.out.println("关闭office转换成功!");
-	}
-
 	private static void copyFile(String oldPathFile, String newPathFile) {
 		try {
 			int byteread = 0;

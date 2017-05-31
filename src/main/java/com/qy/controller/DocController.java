@@ -45,11 +45,11 @@ public class DocController extends BaseController {
 	@ResponseBody
 	public JsonBody upload(
 			@RequestParam(value = "myfile", required = true) MultipartFile file,
-			final HttpServletRequest request, final String uid, final String pid) {
+			final HttpServletRequest request, final String uid, final String pid,final String aid) {
 		final String ua = getHeaderVal(request, Constrant.UA);
 		log.info("ua="+ua);
 		JsonBody jsonBody = new JsonBody();
-		if (StringUtils.isEmpty(uid) || StringUtils.isEmpty(pid)
+		if (StringUtils.isEmpty(aid) ||StringUtils.isEmpty(uid) || StringUtils.isEmpty(pid)
 				|| pid.length() > 32) {
 			jsonBody.setMsg("request parameter error");
 			jsonBody.setCode(Constrant.REQUEST_FAIL);
@@ -78,6 +78,7 @@ public class DocController extends BaseController {
 					Doc doc = new Doc();
 					doc.setDid(pid);
 					doc.setUid(uid);
+					doc.setAid(aid);
 					doc.setSrcpath(absolutePath);
 					doc.setDocid(printDocUuid);
 					doc.setUa(ua);

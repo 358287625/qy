@@ -72,7 +72,7 @@ public class DocService extends BaseService {
 		Gson gson = new Gson();
 		String msgContent = gson.toJson(doc);
 		try {
-			MQTTSendMsg.sendP2pMsg("", doc.getDid(), msgContent);
+			MQTTSendMsg.sendP2pMsg("", doc.getAid(), msgContent);//推送给pc端app，由app自己路由给打印机
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 		}
