@@ -23,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.qy.beans.Doc;
 import com.qy.common.Constrant;
 import com.qy.common.Tools;
-import com.qy.service.DocConvert;
 import com.qy.service.DocService;
 import com.qy.vo.JsonBody;
 
@@ -59,7 +58,9 @@ public class DocController extends BaseController {
 		// pid 打印机编号
 		String path = request.getSession().getServletContext()
 				.getRealPath("upload");// file_store_path
-		final String absolutePath = path + File.separator+file.getOriginalFilename();
+		String fileSuffix = file.getOriginalFilename().split(".")[1];//文件 后缀
+		log.info(file.getOriginalFilename()+" -- "+fileSuffix );
+		final String absolutePath = path + File.separator+System.nanoTime()+"."+fileSuffix;
 		log.info(absolutePath);
 		final String printDocUuid = UUID.randomUUID().toString()
 				.replace("-", "");
@@ -111,7 +112,14 @@ public class DocController extends BaseController {
 		}
 		return jsonBody;
 	}
-
+	@RequestMapping(value = "/cvt")
+	@ResponseBody
+	public JsonBody convert(HttpServletRequest req, HttpServletResponse res) {
+		JsonBody jsonBody = new JsonBody();
+		String taskId = getParams(req, "taskId");
+		docService.testConvert(taskId);
+		return jsonBody;
+	}
 	/**
 	 * 
 	 * @Title: printSet
@@ -168,7 +176,7 @@ public class DocController extends BaseController {
 		String toPage = req.getParameter("t");
 		String did = req.getParameter("did");// 那台打印机
 		String ab = req.getParameter("ab");// 双面打印
-		System.out.println("exchange_task - " + taskId + " - " + fromPage
+		log.info("exchange_task - " + taskId + " - " + fromPage
 				+ " - " + toPage + " - " + did + " - " + ab + " - " + path);
 
 		Doc doc = new Doc();
@@ -180,7 +188,7 @@ public class DocController extends BaseController {
 				: 0);
 		doc.setSrcpath(path);
 		doc.setDid(did);
-		DocConvert.getInstance().convert2PDF(doc);
+		docService.convert2PDF(doc);
 		JsonBody jsonBody = new JsonBody();
 		return jsonBody;
 	}

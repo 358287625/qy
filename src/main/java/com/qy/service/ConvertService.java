@@ -8,11 +8,9 @@ import java.io.InputStream;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.artofsolving.jodconverter.OfficeDocumentConverter;
-import org.artofsolving.jodconverter.office.DefaultOfficeManagerConfiguration;
-import org.artofsolving.jodconverter.office.OfficeManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import com.qy.beans.Doc;
 import com.qy.common.Constrant;
@@ -22,16 +20,9 @@ import com.qy.common.Tools;
  *    * @ClassName DocFormat    @Description TODO   * @author liujx 
  *  @date 2017年5月23日      
  */
-public class DocConvert {
-	private static Logger log = LoggerFactory.getLogger(DocConvert.class);
-	private static OfficeManager officeManager;
-	private static DocConvert instance = new DocConvert();
-	private static String CONVERT_DOC_TO_PDF_SHELL=Class.class.getClass().getResource("/").getPath()+"/convert.sh"; 
-	public static DocConvert getInstance() {
-		return instance;
-	}
-
-	private DocConvert() {}
+@Service
+public class ConvertService {
+	private static Logger log = LoggerFactory.getLogger(ConvertService.class);
 
 	/**
 	 * http://blog.csdn.net/dongdong_919/article/details/44959237
@@ -48,7 +39,10 @@ public class DocConvert {
 	public String convert2PDF(Doc doc) {
 		if (StringUtils.isEmpty(doc.getSrcpath())
 				|| doc.getSrcpath().endsWith(".pdf"))
-			return doc.getSrcpath();
+		{
+			String path = getPdfFileByPage(doc.getSrcpath(),doc.getPageFrom(),doc.getPageTo());
+			return path;
+		}
 
 		File srcFile = new File(doc.getSrcpath());
 		if(!srcFile.exists())
@@ -56,9 +50,14 @@ public class DocConvert {
 		
 		String fileName = srcFile.getName().substring(0,
 				srcFile.getName().lastIndexOf("."));
-		String pdf_path=srcFile.getParent()+Constrant.PDF_PATH;
+		String pdf_path=srcFile.getParentFile().getParent()+Constrant.PDF_PATH;
+		File pdf_store_path = new File(pdf_path);
+		if(!pdf_store_path.exists()){
+			pdf_store_path.mkdirs();
+		}
+		String CONVERT_DOC_TO_PDF_SHELL="/usr/local/tomcat/bin/convert.sh";//+ConvertService.class.getResource("/").getPath()+"/convert.sh"; 
 		int result = Tools.excShell(CONVERT_DOC_TO_PDF_SHELL,doc.getSrcpath() ,pdf_path);
-		
+		log.info(doc.getDocid()+"_result="+result);
 		if(Constrant.REQUEST_SUCCESS!= result)
 			return null;
 		
@@ -77,6 +76,7 @@ public class DocConvert {
 		String file_name = null;
 		PDDocument doc = null;
 		PDDocument pdf = null;
+		log.info(pageFrom +" -- "+ pageEnd);
 		try {
 			if (pageFrom > pageEnd)// 参数不对，不转
 				return pdfFile;
@@ -84,7 +84,6 @@ public class DocConvert {
 			File srcPdf = new File(pdfFile);
 			doc = PDDocument.load(srcPdf);
 			int pages = doc.getNumberOfPages();
-			
 			if (pageFrom <= 0 || pageFrom > pages)
 				return pdfFile;
 
@@ -94,10 +93,15 @@ public class DocConvert {
 			file_name = srcPdf.getParent()+Constrant.PDF_SUB_PATH+srcPdf.getName().substring(0,
 					srcPdf.getName().lastIndexOf("."))
 					+ ".pdf";//部分頁面內容
+			log.info("file_name+"+file_name);
+			File sub_file = new File(file_name);
+			if(!sub_file.exists()){
+				sub_file.getParentFile().mkdirs();
+			}
+			
 			pdf = new PDDocument();
 
 			for (int i = pageFrom - 1; i <= (pageEnd - 1); i++) {
-				log.info(doc.getNumberOfPages() + " -- " + i);
 				pdf.addPage(doc.getPages().get(i));
 			}
 			pdf.save(file_name);

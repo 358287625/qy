@@ -63,7 +63,7 @@
 
 <select id="getPrintTasksByDocId" resultClass="doc" parameterClass="string">
 		  <![CDATA[
-	         SELECT docid,did,pdfpath,num,ab,aid  FROM qy_user_doc_tb WHERE docid=#docid#
+	         SELECT docid,did,pdfpath,num,ab,aid,srcpath,pageFrom,pageTo  FROM qy_user_doc_tb WHERE docid=#docid#
 	    ]]>
 	</select>
 	

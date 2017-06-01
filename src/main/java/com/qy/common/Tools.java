@@ -184,7 +184,7 @@ public class Tools {
 	 */
 	public static int excShell(String shellPath, String... params) {
 		StringBuffer buffer = new StringBuffer();
-		for (int i = 0; (null != params) && i <= params.length; i++) {
+		for (int i = 0; (null != params) && i < params.length; i++) {
 			buffer.append(" " + params[i]);
 		}
 		int success = 0;
